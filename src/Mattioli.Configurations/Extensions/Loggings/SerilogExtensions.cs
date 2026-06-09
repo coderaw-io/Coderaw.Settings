@@ -40,7 +40,7 @@ namespace Mattioli.Configurations.Extensions.Loggings
             return app;
         }
 
-        public static IHostBuilder UseSerilog(this IHostBuilder builder, string collectorUrl, string serviceName, string seqUrl)
+        public static IHostBuilder UseSerilog(this IHostBuilder builder, string collectorUrl, string serviceName, string[] seqUrl)
         {
             return builder.UseSerilog((context, loggerConfiguration) =>
             {
@@ -75,8 +75,12 @@ namespace Mattioli.Configurations.Extensions.Loggings
                             {
                                 { "service.name", serviceName }
                             };
-                        })
-                        .WriteTo.Seq(seqUrl);
+                        });
+
+                    foreach (var url in seqUrl)
+                    {
+                        loggerConfiguration.WriteTo.Seq(url);
+                    }
                 }
             });
         }
